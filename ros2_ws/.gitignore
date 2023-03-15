@@ -1,0 +1,31 @@
+# Ignore ROS2 build and install directories
+/build/
+/install/
+
+# Ignore ROS2 logs and core dumps
+/log/
+/coredump/
+
+# Ignore ROS2 generated files
+install_manifest*
+*.log
+*.log.*
+*.db
+*.db.*
+*.yaml
+
+# Ignore ROS2 development and user files
+/devel/
+/.vscode/
+/.idea/
+*.pyc
+*.pyo
+*.pyd
+*.swp
+*.swo
+*.bak
+*.cache
+*.coverage
+*.egg-info
+__pycache__
+
