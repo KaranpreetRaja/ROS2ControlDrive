@@ -8,6 +8,8 @@ Before getting started, the basic dependancies are ROS2. I am using the Humble H
 
 ### ros2_control
 
+`ros2_control` is a ROS2 package that provides a plugin-based architecture for hardware and controller management. It defines interfaces for hardware interfaces and controllers, which are used to implement robot hardware and control algorithms.
+
 The installtion instructions below are for an installation from a binary build, if you wish to persue a semi-binary build or a source build then please refer to the offcial repo [https://github.com/ros-controls/ros2_control](https://github.com/ros-controls/ros2_control).
 
 ##### 1. Add the ROS2 apt repository to your system's list of package sources
@@ -26,13 +28,31 @@ Adding the ROS2 apt repo (which contains pre-built binaries for ROS2 packages) t
 sudo apt update && sudo apt install ros-$ROS_DISTRO-ros2-control
 ```
 
-Remember to source ros2 when using ros2_control, this can be added to your `~/.bashrc` file for convince:
+### ros2_controllers
+
+`ros2_controllers` is a package that provides a set of "ready-to-use" controllers for `ros2_control`. These include position controllers, velocity controllers, and effort controllers, which can be used to control robot joints, wheels, and/or other mechanisms. it has pre-built integration with various hardware interfaces supported by `ros2_control`.
+
+The installtion instructions below are for an installation from a binary build, if you wish to persue a semi-binary build or a source build then please refer to the offcial repo [https://github.com/ros-controls/ros2_control](https://github.com/ros-controls/ros2_control).
+
+##### 1. Add the ROS2 apt repository to your system's list of package sources (same as ros2_control step)
 
 ```bash
-echo "source /opt/ros/$ROS_DISTRO/setup.bash" >> ~/.bashrc
+sudo apt update && sudo apt install curl gnupg2 lsb-release
+curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add -
+sudo sh -c 'echo "deb [arch=$(dpkg --print-architecture)] http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" > /etc/apt/sources.list.d/ros2-latest.list'
+```
+
+Adding the ROS2 apt repo (which contains pre-built binaries for ROS2 packages) to your sources list will allow you to download and install ROS2 packages using the apt package manager.
+
+##### 2. Update package index and install ros2_control
+
+```bash
+sudo apt update && sudo apt install ros-$ROS_DISTRO-ros2-controllers
 ```
 
 ### gazebo_ros_pkgs
+
+`gazebo_ros_pkgs` is a set of ROS2 packages that provide integration between Gazebo and ROS2. This package includes plugins that allow Gazebo to communicate with ROS2 nodes, allowing it to publish and subscribe to ROS2 topics, and send and receive ROS2 services. `gazebo_ros_pkgs` also provides ROS2 interfaces for simulating robot sensors and actuators in Gazebo, such as cameras, lasers, and joints. It can be used to simulate robots and test control algorithms in a virtual environment before deploying them on real hardware.
 
 The installtion instructions below are for an installation from a binary build, if you wish to presue a source build, please refer to the offical repo (make sure you are on the `ros2` branch) [https://github.com/ros-simulation/gazebo_ros_pkgs/tree/ros2](https://github.com/ros-simulation/gazebo_ros_pkgs/tree/ros2)
 
@@ -40,4 +60,12 @@ The installtion instructions below are for an installation from a binary build, 
 
 ```bash
 sudo apt install ros-$ROS_DISTRO-gazebo-ros-pkgs
+```
+
+### Other Dependancies
+
+Remember to source ros2 before you can actually use ros2, the source can be added to your `~/.bashrc` file for convince:
+
+```bash
+echo "source /opt/ros/$ROS_DISTRO/setup.bash" >> ~/.bashrc
 ```
