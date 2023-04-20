@@ -69,3 +69,8 @@ Remember to source ros2 before you can actually use ros2, the source can be adde
 ```bash
 echo "source /opt/ros/$ROS_DISTRO/setup.bash" >> ~/.bashrc
 ```
+
+You will also need the gazebo_ros2_control package which can be installed as such:
+```bash
+sudo apt-get install ros-<ros2_distro>-gazebo-ros2-control
+```
