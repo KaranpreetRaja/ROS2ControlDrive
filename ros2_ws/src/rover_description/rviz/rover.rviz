@@ -1,0 +1,49 @@
+Visualization Manager:
+  Class: rviz/VisualizationManager
+  Displays:
+    - Class: rviz/Grid
+      Cell Size: 1
+      Color: 160; 160; 164
+      Enabled: true
+      Line Style:
+        Line Width: 0.0299999993294
+        Value: Lines
+      Name: Grid
+      Normal Cell Count: 10
+      Offset: 0; 0; 0
+      Plane: XY
+      Plane Cell Count: 400
+      Reference Frame: <Fixed Frame>
+      Value: false
+    - Class: rviz/RobotModel
+      Enabled: true
+      Name: RobotModel
+      Robot Description: robot_description
+      Update Interval: 0
+      Value: true
+      Visual Enabled: true
+  Enabled: true
+  Global Options:
+    Background Color: 48; 48; 48
+    Fixed Frame: base_link
+    Frame Rate: 30
+  Name: root
+  Tools:
+    - Class: rviz/Interact
+      Hide Inactive Objects: true
+    - Class: rviz/MoveCamera
+    - Class: rviz/Select
+    - Class: rviz/FocusCamera
+    - Class: rviz/Measure
+      Line color: 255; 255; 0
+      Line width: 0.0299999993294
+      Value: false
+  Value: true
+  Views:
+    Current: Orbit (rviz)
+    Orbit (rviz):
+      Class: rviz/Orbit
+      Distance: 10
+      Eye Point: 5; 5; 5
+      Focal Point: 0; 0; 0
+      Inactive: false
