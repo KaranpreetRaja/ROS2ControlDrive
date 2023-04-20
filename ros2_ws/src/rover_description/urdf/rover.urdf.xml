@@ -1,0 +1,48 @@
+<!-- This URDF file simply defines a "rover" with 4 wheels (two on each side). Where each wheels is a cylinder with a radius of 0.1 meters and a length of 0.05 meters-->
+<!-- Note: This file is not a valid URDF file. It is an Xacro file. You can replace the xacro:macro and xacro:wheel tags with their corresponding expanded XML if you want to use this file as a URDF.-->
+
+<?xml version="1.0"?>
+
+<robot name="rover" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <!-- Declaring Constants -->
+  <xacro:property name="wheel_radius" value="0.1" />
+  <xacro:property name="wheel_length" value="0.05" />
+
+  <!-- Base link -->
+  <link name="base_link">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1" />
+      <inertia ixx="1" ixy="0" ixz="0" iyy="1" iyz="0" izz="1" />
+    </inertial>
+  </link>
+
+  <!-- Wheels go BRRRRR -->
+  <xacro:macro name="wheel" params="name origin">
+    <link name="${name}">
+      <visual>
+        <origin xyz="${origin}" rpy="0 0 0" />
+        <geometry>
+          <cylinder radius="${wheel_radius}" length="${wheel_length}" />
+        </geometry>
+      </visual>
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <mass value="0.5" />
+        <inertia ixx="1" ixy="0" ixz="0" iyy="1" iyz="0" izz="1" />
+      </inertial>
+    </link>
+    <joint name="${name}_joint" type="continuous">
+      <parent link="base_link" />
+      <child link="${name}" />
+      <origin xyz="${origin}" rpy="0 0 0" />
+      <axis xyz="0 1 0" />
+    </joint>
+  </xacro:macro>
+
+  <!-- Instantiate wheels -->
+  <xacro:wheel name="front_left_wheel" origin="-0.2 0.2 0" />
+  <xacro:wheel name="front_right_wheel" origin="0.2 0.2 0" />
+  <xacro:wheel name="rear_left_wheel" origin="-0.2 -0.2 0" />
+  <xacro:wheel name="rear_right_wheel" origin="0.2 -0.2 0" />
+</robot>
