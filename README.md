@@ -50,6 +50,23 @@ Adding the ROS2 apt repo (which contains pre-built binaries for ROS2 packages) t
 sudo apt update && sudo apt install ros-$ROS_DISTRO-ros2-controllers
 ```
 
+### Gazebo Fortress Installation
+`Gazebo Fortress` (formerly Ignition) allows for simulation and enchanced development of ROS-based systems. [For more installation information](https://gazebosim.org/docs/fortress/install_ubuntu)
+
+Install the necessary dependencies first:
+```bash
+sudo apt-get update
+sudo apt-get install lsb-release wget gnupg
+```
+
+Now add the Gazebo Fortress apt repository to your system's list of package sources and install the `ignition-fortress` package:
+```bash
+sudo wget https://packages.osrfoundation.org/gazebo.gpg -O /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] http://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/gazebo-stable.list > /dev/null
+sudo apt-get update
+sudo apt-get install ignition-fortress
+```
+
 ### gazebo_ros_pkgs
 
 `gazebo_ros_pkgs` is a set of ROS2 packages that provide integration between Gazebo and ROS2. This package includes plugins that allow Gazebo to communicate with ROS2 nodes, allowing it to publish and subscribe to ROS2 topics, and send and receive ROS2 services. `gazebo_ros_pkgs` also provides ROS2 interfaces for simulating robot sensors and actuators in Gazebo, such as cameras, lasers, and joints. It can be used to simulate robots and test control algorithms in a virtual environment before deploying them on real hardware.
@@ -61,6 +78,7 @@ The installtion instructions below are for an installation from a binary build, 
 ```bash
 sudo apt install ros-$ROS_DISTRO-gazebo-ros-pkgs
 ```
+
 
 ### Other Dependancies
 
