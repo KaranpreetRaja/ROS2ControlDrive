@@ -4,6 +4,12 @@ from launch import LaunchDescription
 from launch_ros.actions import Node
 import xacro
 
+#ros2 launch rover_control state_pub_launch.py 
+#ros2 launch gazebo_ros gazebo.launch.py world:=src/robot_testing/worlds/world6.world
+#ros2 run gazebo_ros spawn_entity.py -topic robot_description -entity rover_brother
+
+
+
 
 def generate_launch_description():
 
@@ -21,16 +27,25 @@ def generate_launch_description():
     #     robot_desc = infp.read()
 
 
+
     # Configure the node
     node_robot_state_publisher = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
         output='screen',
-        parameters=[{'robot_description': robot_desc}] # add other parameters here if required
+        parameters=[{'robot_description': robot_desc, 'use_sim_time':True, 'use_ros2_control':True}] # add other parameters here if required
     )
+    spawn_entity = Node(
+        package='gazebo_ros', 
+        executable='spawn_entity.py',
+        arguments=['-topic', 'robot_description',
+            '-entity', 'rover_brother'],
+        output='screen')
+ 
 
 
     # Run the node
     return LaunchDescription([
         node_robot_state_publisher
+#        ,spawn_entity
     ])

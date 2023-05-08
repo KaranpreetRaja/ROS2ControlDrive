@@ -4,33 +4,57 @@
   <!-- Declaring Constants -->
   <xacro:property name="wheel_radius" value="0.3" />
   <xacro:property name="wheel_length" value="0.1" />
+  <xacro:property name="base_origin" value="0 0 0.2" />
+  <xacro:property name="base_size" value="0.5 0.8 0.4" />
 
 
-  <!-- Base link -->
+  <!-- <link name="dummy"></link>
+
+  <joint name="dummy_joint" type="fixed">
+    <origin xyz="1.5 1.0 0" rpy="0 0 0"/>
+    <parent link="dummy"/>
+    <child link="base_link"/>        
+  </joint> -->
   <link name="base_link">
+  </link>
+  
+  <link name="rover_link">
+    
     <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="${base_origin}" rpy="0 0 0"/>
       <geometry>
-        <box size="2.5 1.5 0.1" />
+        <box size="${base_size}" />
       </geometry>
       <material name="green">
         <color rgba="0.2 1 0.2 1"/>
       </material>
     </visual>
+    <collision>
+      <origin xyz="${base_origin}" rpy="0 0 0"/>
+      <geometry>
+        <box size="${base_size}" />
+      </geometry>
+    </collision>
     <inertial>
-      <origin xyz="0 0 0.6" rpy="0 0 0" />
+      <origin xyz="${base_origin}" rpy="0 0 0" />
       <mass value="1" />
-      <inertia ixx="1" ixy="0" ixz="0" iyy="1" iyz="0" izz="1" />
+      <inertia ixx="0.17" ixy="0.0" ixz="0.0" iyy="0.17" iyz="0.0" izz="0.17" />
     </inertial>
   </link>
 
+  <joint name="rover_base_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="rover_link"/>
+    <origin xyz="0 0 0"/>
+  </joint>
+  
   <!-- Wheels go BRRRRR -->
-  <xacro:macro name="wheel" params="name origin">
+  <xacro:macro name="wheel" params="name x_wheel y_wheel tilt_sign">
     <link name="${name}">
-    <xacro:property name="tilt" value="${pi/2} 0 0" />
+    <xacro:property name="tilt" value="0 ${tilt_sign*pi/2} 0" />
 
       <visual>
-        <origin xyz="${origin}" rpy="${tilt}" />
+        <origin xyz="0 0 0" rpy="${tilt}" />
         <material name="blue">
           <color rgba="0.2 0.2 1 1"/>
         </material>
@@ -39,47 +63,94 @@
         </geometry>
       </visual>
       <collision>
-        <origin xyz="${origin}" rpy="${tilt}"/>
+        <origin xyz="0 0 0" rpy="${tilt}"/>
         <geometry>
           <cylinder radius="${wheel_radius}" length="${wheel_length}" />
         </geometry>
       </collision>
       <inertial>
-        <origin xyz="${origin}" rpy="${tilt}" />
+        <origin xyz="0 0 0" rpy="${tilt}"/>
         <mass value="0.5" />
-        <inertia ixx="1" ixy="0" ixz="0" iyy="1" iyz="0" izz="1" />
+        <inertia ixx="0.17" ixy="0.0" ixz="0.0" iyy="0.17" iyz="0.0" izz="0.17" />
       </inertial>
     </link>
     <joint name="${name}_joint" type="continuous">
       <parent link="base_link" />
       <child link="${name}" />
-      <origin xyz="${origin}" rpy="0 0 0" />
-      <axis xyz="0 1 0" />
+      <origin xyz="${x_wheel} ${y_wheel} 0" rpy="0 0 0" />
+      <axis xyz="1 0 0" />
     </joint>
   </xacro:macro>
 
   <!-- Instantiate wheels -->
-  <xacro:wheel name="front_left_wheel" origin="-0.2 0.2 0" />
-  <xacro:wheel name="front_right_wheel" origin="0.2 0.2 0" />
-  <xacro:wheel name="rear_left_wheel" origin="-0.2 -0.2 0" />
-  <xacro:wheel name="rear_right_wheel" origin="0.2 -0.2 0" />
+  <xacro:wheel name="front_left_wheel" x_wheel="-0.4" y_wheel="0.5" tilt_sign="-1"/>
+  <xacro:wheel name="front_right_wheel" x_wheel="0.4" y_wheel="0.5" tilt_sign="1"/>
+  <xacro:wheel name="rear_left_wheel" x_wheel="-0.4" y_wheel="-0.5" tilt_sign="-1"/>
+  <xacro:wheel name="rear_right_wheel" x_wheel="0.4" y_wheel="-0.5" tilt_sign="1"/>
+
+  <ros2_control name="GazeboSystem" type="system">
+    <hardware>
+      <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+    </hardware>
+    <joint name="front_left_wheel_joint">
+      <command_interface name="velocity">
+        <param name="min">-10</param>
+        <param name="max">10</param>
+      </command_interface>
+      <state_interface name="position" />
+      <state_interface name="velocity" />
+    </joint>
+    <joint name="front_right_wheel_joint">
+      <command_interface name="velocity">
+        <param name="min">-10</param>
+        <param name="max">10</param>
+      </command_interface>
+      <state_interface name="velocity" />
+      <state_interface name="position" />
+    </joint>
+  </ros2_control>
   
   <!-- <gazebo>
     <plugin name="gazebo_ros_control" filename="libgazebo_ros2_control.so">
       <ros>
         <namespace>/rover</namespace>
       </ros>
-      <robotSimType>gazebo_ros2_control/GazeboSystem</robotSimType>
+      <robotSimType>gazebo_ros2_control/GazeboSystem</robotySimType>
       <robotParam>robot_description</robotParam>
     </plugin>
   </gazebo> -->
+  <gazebo>
+    <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
+      <parameters>"$(find rover_control)/config/my_controller.yaml"</parameters>
+    </plugin>
 
-  <gazebo reference="base_link">
+    <!-- <plugin name='diff_drive' filename='libgazebo_ros_diff_drive.so'>
+
+      <left_joint>front_left_wheel_joint</left_joint>
+      <right_joint>front_right_wheel_joint</right_joint>
+
+      <wheel_separation>0.8</wheel_separation>
+      <wheel_diameter>${2*wheel_radius}</wheel_diameter>
+
+
+      <max_wheel_torque>200</max_wheel_torque>
+      <max_wheel_acceleration>10.0</max_wheel_acceleration>
+
+
+
+      <odometry_frame>odom</odometry_frame>
+      <robot_base_frame>base_link</robot_base_frame>
+
+      <publish_odom>true</publish_odom>
+      <publish_odom_tf>true</publish_odom_tf>
+      <publish_wheel_tf>true</publish_wheel_tf>
+
+
+    </plugin> -->
+  </gazebo>
+
+  <gazebo reference="rover_link">
     <material>Gazebo/Green</material>
   </gazebo>
-
-  <gazebo reference="slider_link">
-    <material>Gazebo/Blue</material>
-  </gazebo>
-
+  
 </robot>
