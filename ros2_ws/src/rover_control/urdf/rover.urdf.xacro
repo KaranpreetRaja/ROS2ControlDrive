@@ -83,15 +83,16 @@
   </xacro:macro>
 
   <!-- Instantiate wheels -->
-  <xacro:wheel name="front_left_wheel" x_wheel="-0.4" y_wheel="0.5" tilt_sign="-1"/>
-  <xacro:wheel name="front_right_wheel" x_wheel="0.4" y_wheel="0.5" tilt_sign="1"/>
-  <xacro:wheel name="rear_left_wheel" x_wheel="-0.4" y_wheel="-0.5" tilt_sign="-1"/>
-  <xacro:wheel name="rear_right_wheel" x_wheel="0.4" y_wheel="-0.5" tilt_sign="1"/>
+  <xacro:wheel name="front_left_wheel" x_wheel="-0.7" y_wheel="0.5" tilt_sign="-1"/>
+  <xacro:wheel name="front_right_wheel" x_wheel="0.7" y_wheel="0.5" tilt_sign="1"/>
+  <xacro:wheel name="rear_left_wheel" x_wheel="-0.7" y_wheel="-0.5" tilt_sign="-1"/>
+  <xacro:wheel name="rear_right_wheel" x_wheel="0.7" y_wheel="-0.5" tilt_sign="1"/>
 
   <ros2_control name="GazeboSystem" type="system">
     <hardware>
       <plugin>gazebo_ros2_control/GazeboSystem</plugin>
     </hardware>
+
     <joint name="front_left_wheel_joint">
       <command_interface name="velocity">
         <param name="min">-10</param>
@@ -100,6 +101,7 @@
       <state_interface name="position" />
       <state_interface name="velocity" />
     </joint>
+
     <joint name="front_right_wheel_joint">
       <command_interface name="velocity">
         <param name="min">-10</param>
@@ -108,20 +110,31 @@
       <state_interface name="velocity" />
       <state_interface name="position" />
     </joint>
+
+    <joint name="rear_left_wheel_joint">
+      <command_interface name="velocity">
+        <param name="min">-10</param>
+        <param name="max">10</param>
+      </command_interface>
+      <state_interface name="velocity" />
+      <state_interface name="position" />
+    </joint>
+
+    <joint name="rear_right_wheel_joint">
+      <command_interface name="velocity">
+        <param name="min">-10</param>
+        <param name="max">10</param>
+      </command_interface>
+      <state_interface name="velocity" />
+      <state_interface name="position" />
+    </joint>
+
   </ros2_control>
   
-  <!-- <gazebo>
-    <plugin name="gazebo_ros_control" filename="libgazebo_ros2_control.so">
-      <ros>
-        <namespace>/rover</namespace>
-      </ros>
-      <robotSimType>gazebo_ros2_control/GazeboSystem</robotySimType>
-      <robotParam>robot_description</robotParam>
-    </plugin>
-  </gazebo> -->
+  
   <gazebo>
     <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
-      <parameters>"$(find rover_control)/config/my_controller.yaml"</parameters>
+      <parameters>$(find rover_control)/config/my_controller.yaml</parameters>
     </plugin>
 
     <!-- <plugin name='diff_drive' filename='libgazebo_ros_diff_drive.so'>
