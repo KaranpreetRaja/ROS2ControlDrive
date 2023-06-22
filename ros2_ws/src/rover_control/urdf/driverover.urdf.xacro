@@ -81,6 +81,18 @@
         <inertia ixx="0.17" ixy="0.0" ixz="0.0" iyy="0.17" iyz="0.0" izz="0.17" />
       </inertial>
     </link>
+    
+    <!-- <transmission name="transmission_name">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="joint_name">
+        <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="actuator_name">
+        <mechanicalReduction>1.0</mechanicalReduction>
+        <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      </actuator>
+    </transmission> -->
+
     <joint name="${name}_joint" type="continuous">
       <parent link="base_link" />
       <child link="${name}" />
@@ -106,68 +118,32 @@
     <origin xyz="0 0 0"/>
   </joint>
 
-
+  <xacro:macro name="wheel_joint" params="name">
+    <joint name="${name}">
+      <command_interface name="effort">
+        <param name="min">-10</param>
+        <param name="max">10</param>
+      </command_interface>
+      <command_interface name="velocity">
+        <param name="min">-10</param>
+        <param name="max">10</param>
+      </command_interface>
+      <state_interface name="position" />
+      <state_interface name="velocity" />
+    </joint>
+  </xacro:macro>
 
   <ros2_control name="GazeboSystem" type="system">
     <hardware>
       <plugin>gazebo_ros2_control/GazeboSystem</plugin>
     </hardware>
 
-    <joint name="front_left_wheel_joint">
-      <command_interface name="velocity">
-        <param name="min">-10</param>
-        <param name="max">10</param>
-      </command_interface>
-      <state_interface name="position" />
-      <state_interface name="velocity" />
-    </joint>
-
-    <joint name="front_right_wheel_joint">
-      <command_interface name="velocity">
-        <param name="min">-10</param>
-        <param name="max">10</param>
-      </command_interface>
-      <state_interface name="velocity" />
-      <state_interface name="position" />
-    </joint>
-
-
-    <joint name="middle_left_wheel_joint">
-      <command_interface name="velocity">
-        <param name="min">-10</param>
-        <param name="max">10</param>
-      </command_interface>
-      <state_interface name="position" />
-      <state_interface name="velocity" />
-    </joint>
-
-    <joint name="middle_right_wheel_joint">
-      <command_interface name="velocity">
-        <param name="min">-10</param>
-        <param name="max">10</param>
-      </command_interface>
-      <state_interface name="velocity" />
-      <state_interface name="position" />
-    </joint>
-
-    <joint name="rear_left_wheel_joint">
-      <command_interface name="velocity">
-        <param name="min">-10</param>
-        <param name="max">10</param>
-      </command_interface>
-      <state_interface name="velocity" />
-      <state_interface name="position" />
-    </joint>
-
-    <joint name="rear_right_wheel_joint">
-      <command_interface name="velocity">
-        <param name="min">-10</param>
-        <param name="max">10</param>
-      </command_interface>
-      <state_interface name="velocity" />
-      <state_interface name="position" />
-    </joint>
-
+    <xacro:wheel_joint name="front_left_wheel_joint"/>
+    <xacro:wheel_joint name="front_right_wheel_joint"/>
+    <xacro:wheel_joint name="middle_left_wheel_joint"/>
+    <xacro:wheel_joint name="middle_right_wheel_joint"/>
+    <xacro:wheel_joint name="rear_left_wheel_joint"/>
+    <xacro:wheel_joint name="rear_right_wheel_joint"/>
   </ros2_control>
 
 

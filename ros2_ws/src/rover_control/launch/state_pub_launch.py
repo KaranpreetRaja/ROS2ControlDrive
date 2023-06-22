@@ -49,16 +49,10 @@ def generate_launch_description():
                    '-entity', 'rover_brother'],
         output='screen')
 
-    diff_drive_spawner = Node(
+    drive_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["dif_cont"],
-    )
-
-    joint_broad_spawner = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=["joint_broadcaster"],
+        arguments=["drive_controller"],
     )
 
     # Run the node
@@ -66,7 +60,5 @@ def generate_launch_description():
         node_robot_state_publisher,
         gazebo,
         spawn_entity,
-        diff_drive_spawner,
-        joint_broad_spawner
-
+        drive_spawner
     ])
