@@ -1,0 +1,127 @@
+<?xml version="1.0"?>
+
+<robot name="rover" xmlns:xacro="http://www.ros.org/wiki/xacro" xmlns:gazebo="http://gazebosim.org/schema">>
+  <!-- Declaring Positional Constraints -->
+  <xacro:property name="chasis_origin" value="0 0 0.2" />
+  
+  
+  <!-- Declaring Dimension Constants (unit Meters)-->
+  <xacro:property name="wheel_radius" value="0.15" />            <!-- this is BS-->
+  <xacro:property name="wheel_width" value="0.08" />             <!-- this is BS-->
+  <xacro:property name="chasis_height" value="0.25"/>            <!-- this is BS-->
+  <xacro:property name="chasis_width" value="0.4"/>              <!-- this is BS-->
+  <xacro:property name="chasis_length" value="0.410718"/>        <!-- this is BS-->
+
+  <!-- Declaring Mass Constants (unit Kilograms)-->
+  <xacro:property name="chasis_mass" value="1.0"/>               <!-- this is BS-->
+
+
+  <!-- declaring colors -->
+  <material name="green">
+    <color rgba="0.2 1 0.2 1"/>
+  </material>
+  <material name="blue">
+    <color rgba="0.2 0.2 1 1"/>
+  </material>
+  <material name="red">
+    <color rgba="1 0.2 0.2 1"/>
+  </material>
+
+  
+  <link name="base_link">
+  </link>
+
+  <link name="chasis_link">
+    <visual>
+      <origin xyz="${chasis_origin}" rpy="0 0 0"/>
+      <geometry>
+        <box size="${chasis_length} ${chasis_width} ${chasis_height}"/>
+      </geometry>
+      <material name="green">
+        <color rgba="0.2 1 0.2 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="${chasis_origin}" rpy="0 0 0"/>
+      <geometry>
+        <box size="${chasis_length} ${chasis_width} ${chasis_height}" />
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="${chasis_origin}" rpy="0 0 0" />
+      <mass value="1" />
+      <inertia ixx="0.17" ixy="0.0" ixz="0.0" iyy="0.17" iyz="0.0" izz="0.17" />
+    </inertial>
+  </link>
+
+
+    <!-- Wheels go BRRRRR -->
+  <xacro:macro name="wheel" params="name x_wheel y_wheel tilt_sign">
+    <link name="${name}">
+    <xacro:property name="tilt" value="0 ${tilt_sign*pi/2} 0" />
+
+      <visual>
+        <origin xyz="0 0 0" rpy="${tilt}" />
+        <material name="blue">
+          <color rgba="0.2 0.2 1 1"/>
+        </material>
+        <geometry>
+          <cylinder radius="${wheel_radius}" length="${wheel_width}" />
+        </geometry>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="${tilt}"/>
+        <geometry>
+          <cylinder radius="${wheel_radius}" length="${wheel_width}" />
+        </geometry>
+      </collision>
+      <inertial>
+        <origin xyz="0 0 0" rpy="${tilt}"/>
+        <mass value="0.5" />
+        <inertia ixx="0.17" ixy="0.0" ixz="0.0" iyy="0.17" iyz="0.0" izz="0.17" />
+      </inertial>
+    </link>
+    <joint name="${name}_joint" type="continuous">
+      <parent link="base_link" />
+      <child link="${name}" />
+      <origin xyz="${x_wheel} ${y_wheel} 0" rpy="0 0 0" />
+      <axis xyz="1 0 0" />
+    </joint>
+  </xacro:macro>
+
+
+
+
+<xacro:wheel name="wheel1" x_wheel="0.205359" y_wheel="0.2" tilt_sign="1"/>
+  
+
+  <joint name="chasis_base_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="chasis_link"/>
+    <origin xyz="-0.1 0 0"/>
+  </joint>
+
+
+
+
+
+  <joint name="chasis_to_wheel1" type="continuous">
+    <parent link="chasis_link"/>
+    <child link="wheel1"/>
+    <origin xyz="0.205359 0.2 0.125" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+
+
+  <gazebo>
+    <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
+      <parameters>$(find rover_control)/config/my_controller.yaml</parameters>
+    </plugin>
+  </gazebo>
+
+  <gazebo reference="rover_link">
+    <material>Gazebo/Green</material>
+  </gazebo>
+
+
+</robot>
