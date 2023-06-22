@@ -18,7 +18,7 @@ def generate_launch_description():
                         'type': 'system',
                         'class': 'ros2_control_demo_hardware/PositionActuatorHardwareSim',
                         'parameters': {
-                            'joints': ['front_left_wheel_joint', 'front_right_wheel_joint', 'rear_left_wheel_joint', 'rear_right_wheel_joint']
+                            'joints': ['front_left_wheel_joint', 'middle_right_wheel_joint', 'front_right_wheel_joint', 'rear_left_wheel_joint', 'middle_left_wheel_joint',, 'rear_right_wheel_joint']
                         }
                     }]
                 }
