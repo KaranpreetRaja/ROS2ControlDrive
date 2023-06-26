@@ -29,3 +29,5 @@ install_manifest*
 *.egg-info
 __pycache__
 
+!src/rover_control/config/
+!src/york_rover/

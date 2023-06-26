@@ -1,0 +1,21 @@
+controller_manager:
+  ros__parameters:
+    update_rate: 30
+    use_sim_time: true
+
+    drive_controller:
+      type: forward_command_controller/ForwardCommandController
+
+    joint_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+drive_controller:
+  ros__parameters:
+    joints:
+      - front_right_wheel_joint
+      - middle_right_wheel_joint
+      - rear_right_wheel_joint
+      - front_left_wheel_joint
+      - middle_left_wheel_joint
+      - rear_left_wheel_joint
+    interface_name: effort
