@@ -8,8 +8,8 @@ def map_to_torque(current_num):
     current_min = -32767
     current_max = 32767
 
-    desired_min = -1
-    desired_max = 1
+    desired_min = -10
+    desired_max = 10
 
     scaling_factor = float(desired_max - desired_min) / \
         float(current_max - current_min)
@@ -24,12 +24,12 @@ def map_to_torque(current_num):
 
 class MyROS2Node(Node):
     def __init__(self):
-        super().__init__('my_ros2_node')
+        super().__init__('ps4_contol')
         print("ROS2 Node Initialized")
         self.publisher = self.create_publisher(
             Float64MultiArray, '/drive_controller/commands', 10)
-        self.right_data = [0, 0, 0]
-        self.left_data = [0, 0, 0]
+        self.right_data = [0.0, 0.0, 0.0]
+        self.left_data = [0.0, 0.0, 0.0]
 
     def publish_data(self):
         print("Publishing Data")
@@ -56,26 +56,26 @@ class MyController(Controller):
         self.ros2_node = ros2_node
 
     def on_L3_up(self, value):
-        torque = map_to_torque(value)
-        self.ros2_node.update_left_data([torque, torque, torque])
+        torque = float(map_to_torque(value))
+        self.ros2_node.update_left_data([-torque, -torque, -torque])
 
     def on_L3_down(self, value):
-        torque = map_to_torque(value)
-        self.ros2_node.update_left_data([torque, torque, torque])
+        torque = float(map_to_torque(value))
+        self.ros2_node.update_left_data([-torque, -torque, -torque])
 
     def on_L3_y_at_rest(self):
-        self.ros2_node.update_left_data([0, 0, 0])
+        self.ros2_node.update_left_data([0.0, 0.0, 0.0])
 
     def on_R3_up(self, value):
-        torque = map_to_torque(value)
+        torque = float(map_to_torque(value))
         self.ros2_node.update_right_data([torque, torque, torque])
 
     def on_R3_down(self, value):
-        torque = map_to_torque(value)
+        torque = float(map_to_torque(value))
         self.ros2_node.update_right_data([torque, torque, torque])
 
     def on_R3_y_at_rest(self):
-        self.ros2_node.update_right_data([0, 0, 0])
+        self.ros2_node.update_right_data([0.0, 0.0, 0.0])
 
 
 def main(args=None):

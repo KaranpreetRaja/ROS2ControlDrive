@@ -12,7 +12,6 @@ install_manifest*
 *.log.*
 *.db
 *.db.*
-*.yaml
 
 # Ignore ROS2 development and user files
 /devel/
